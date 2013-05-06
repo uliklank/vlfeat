@@ -176,6 +176,7 @@ then a point need not to be reassigned. See [3] for details.
 #include "mathop.h"
 #include <string.h>
 
+
 /* ================================================================ */
 #ifndef VL_KMEANS_INSTANTIATING
 
@@ -1280,6 +1281,7 @@ VL_XCAT(_vl_kmeans_refine_centers_, SFX)
     default:
       abort() ;
   }
+  return 0.0;
 }
 
 /* VL_KMEANS_INSTANTIATING */
@@ -1470,6 +1472,7 @@ vl_kmeans_refine_centers
     default:
       abort() ;
   }
+  return 0.0;
 }
 
 

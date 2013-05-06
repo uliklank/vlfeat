@@ -14,6 +14,7 @@ the terms of the BSD license (see the COPYING file).
 #ifndef VL_KMEANS_H
 #define VL_KMEANS_H
 
+
 #include "generic.h"
 #include "random.h"
 #include "mathop.h"

@@ -374,11 +374,11 @@ vl_refine_local_extreum_3 (VlCovDetExtremum3 * refined,
     refined->xi = x ;
     refined->yi = y ;
     refined->zi = z ;
-    refined->x = x + b[0] ;
-    refined->y = y + b[1] ;
-    refined->z = z + b[2] ;
-    refined->peakScore = peakScore ;
-    refined->edgeScore = edgeScore ;
+    refined->x = (float)(x + b[0]);
+    refined->y = (float)(y + b[1]);
+    refined->z = (float)(z + b[2]);
+    refined->peakScore = (float)peakScore ;
+    refined->edgeScore = (float)edgeScore ;
 
     return
     err == VL_ERR_OK &&
@@ -486,10 +486,10 @@ vl_refine_local_extreum_2 (VlCovDetExtremum2 * refined,
 
     refined->xi = x ;
     refined->yi = y ;
-    refined->x = x + b[0] ;
-    refined->y = y + b[1] ;
-    refined->peakScore = peakScore ;
-    refined->edgeScore = edgeScore ;
+    refined->x = (float)(x + b[0] );
+    refined->y = (float)(y + b[1] );
+    refined->peakScore = (float)peakScore ;
+    refined->edgeScore = (float)edgeScore ;
 
     return
     err == VL_ERR_OK &&
@@ -623,7 +623,7 @@ vl_covdet_new (VlCovDetMethod method)
       for (i = -w ; i <= w ; ++i) {
         double dx = i*step/sigma ;
         double dy = j*step/sigma ;
-        self->aaMask[(i+w) + (2*w+1)*(j+w)] = exp(-0.5*(dx*dx+dy*dy)) ;
+        self->aaMask[(i+w) + (2*w+1)*(j+w)] = (float)exp(-0.5*(dx*dx+dy*dy)) ;
       }
     }
   }
@@ -956,7 +956,7 @@ _vl_harris_response (float * harris,
     float determinant = a * b - c * c ;
     float trace = a + b ;
 
-    harris[k] = factor * (determinant - alpha * (trace * trace)) ;
+    harris[k] = (float)(factor * (determinant - alpha * (trace * trace))) ;
   }
 
   vl_free(LxLy) ;
@@ -1116,12 +1116,12 @@ vl_covdet_detect (VlCovDet * self)
               double sigma = cgeom.sigma0 *
               pow(2.0, o + (refined.z - cgeom.octaveFirstSubdivision)
                   / cgeom.octaveResolution) ;
-              feature.frame.x = refined.x * step ;
-              feature.frame.y = refined.y * step ;
-              feature.frame.a11 = sigma ;
-              feature.frame.a12 = 0.0 ;
-              feature.frame.a21 = 0.0 ;
-              feature.frame.a22 = sigma ;
+              feature.frame.x = (float)(refined.x * step);
+              feature.frame.y = (float)(refined.y * step);
+              feature.frame.a11 = (float)sigma ;
+              feature.frame.a12 = 0.0f ;
+              feature.frame.a21 = 0.0f ;
+              feature.frame.a22 = (float)sigma ;
               feature.peakScore = refined.peakScore ;
               feature.edgeScore = refined.edgeScore ;
               vl_covdet_append_feature(self, &feature) ;
@@ -1153,12 +1153,12 @@ vl_covdet_detect (VlCovDet * self)
               if (ok) {
                 double sigma = cgeom.sigma0 *
                 pow(2.0, o + (double)s / cgeom.octaveResolution) ;
-                feature.frame.x = refined.x * step ;
-                feature.frame.y = refined.y * step ;
-                feature.frame.a11 = sigma ;
-                feature.frame.a12 = 0.0 ;
-                feature.frame.a21 = 0.0 ;
-                feature.frame.a22 = sigma ;
+                feature.frame.x = (float)(refined.x * step);
+                feature.frame.y = (float)(refined.y * step);
+                feature.frame.a11 = (float)sigma ;
+                feature.frame.a12 = 0.0f ;
+                feature.frame.a21 = 0.0f ;
+                feature.frame.a22 = (float)sigma ;
                 feature.peakScore = refined.peakScore ;
                 feature.edgeScore = refined.edgeScore ;
                 vl_covdet_append_feature(self, &feature) ;
@@ -1369,10 +1369,10 @@ vl_covdet_extract_patch_helper (VlCovDet * self,
     }
 
     /* Leave one pixel border for bilinear interpolation. */
-    x0i = floor(x0) - 1 ;
-    y0i = floor(y0) - 1 ;
-    x1i = ceil(x1) + 1 ;
-    y1i = ceil(y1) + 1 ;
+    x0i = (vl_index)(floor(x0) - 1);
+    y0i = (vl_index)(floor(y0) - 1);
+    x1i = (vl_index)(ceil(x1) + 1);
+    y1i = (vl_index)(ceil(y1) + 1);
 
     /*
      If the box [x0i,y0i,x1i,y1i] is not fully contained in the
@@ -1403,7 +1403,7 @@ vl_covdet_extract_patch_helper (VlCovDet * self,
         /* start by filling the central horizontal band */
         for (yi = y0i + pady0 ; yi < y0i + patchHeight - pady1 ; ++ yi) {
           float *dst = self->patch + (yi - y0i) * patchWidth ;
-          float const *src = level + yi * width + VL_MIN(VL_MAX(0, x0i),width-1) ;
+          float const *src = level + yi * width + VL_MIN((vl_size)VL_MAX((vl_index)0, x0i),width-1) ;
           for (xi = x0i ; xi < x0i + padx0 ; ++xi) *dst++ = *src ;
           for ( ; xi < x0i + patchWidth - padx1 - 2 ; ++xi) *dst++ = *src++ ;
           for ( ; xi < x0i + patchWidth ; ++xi) *dst++ = *src ;
@@ -1468,9 +1468,9 @@ vl_covdet_extract_patch_helper (VlCovDet * self,
         assert(xi >= 0 && xi <= (signed)width - 1) ;
         assert(yi >= 0 && yi <= (signed)height - 1) ;
 
-        *pt++ =
+        *pt++ = (float)(
         (1.0 - wy) * ((1.0 - wx) * i00 + wx * i10) +
-        wy * ((1.0 - wx) * i01 + wx * i11) ;
+        wy * ((1.0 - wx) * i01 + wx * i11));
 
         xhat += stephat ;
       }
@@ -1600,10 +1600,10 @@ vl_covdet_extract_affine_shape_for_frame (VlCovDet * self,
     A[2] = U[2] * D[3] ;
     A[3] = U[3] * D[3] ;
 
-    adapted->a11 = A[0] ;
-    adapted->a21 = A[1] ;
-    adapted->a12 = A[2] ;
-    adapted->a22 = A[3] ;
+    adapted->a11 = (float)A[0] ;
+    adapted->a21 = (float)A[1] ;
+    adapted->a12 = (float)A[2] ;
+    adapted->a22 = (float)A[3] ;
 
     if (++iter >= VL_COVDET_AA_MAX_NUM_ITERATIONS) break ;
 
@@ -1712,10 +1712,10 @@ vl_covdet_extract_affine_shape_for_frame (VlCovDet * self,
     dangle = angle_ - angle ;
     r1 = cos(dangle) ;
     r2 = sin(dangle) ;
-    adapted->a11 = + A[0] * r1 + A[2] * r2 ;
-    adapted->a21 = + A[1] * r1 + A[3] * r2 ;
-    adapted->a12 = - A[0] * r2 + A[2] * r1 ;
-    adapted->a22 = - A[1] * r2 + A[3] * r1 ;
+    adapted->a11 = (float)( + A[0] * r1 + A[2] * r2 );
+    adapted->a21 = (float)( + A[1] * r1 + A[3] * r2 );
+    adapted->a12 = (float)( - A[0] * r2 + A[2] * r1 );
+    adapted->a22 = (float)( - A[1] * r2 + A[3] * r1 );
   }
 
   return VL_ERR_OK ;
@@ -1961,11 +1961,11 @@ vl_covdet_extract_orientations (VlCovDet * self)
         oriented = & self->features[self->numFeatures -1] ;
       }
 
-      oriented->orientationScore = orientations[j].score ;
-      oriented->frame.a11 = + A[0] * r1 + A[2] * r2 ;
-      oriented->frame.a21 = + A[1] * r1 + A[3] * r2 ;
-      oriented->frame.a12 = - A[0] * r2 + A[2] * r1 ;
-      oriented->frame.a22 = - A[1] * r2 + A[3] * r1 ;
+      oriented->orientationScore = (float)orientations[j].score ;
+      oriented->frame.a11 = (float)(+ A[0] * r1 + A[2] * r2) ;
+      oriented->frame.a21 = (float)(+ A[1] * r1 + A[3] * r2) ;
+      oriented->frame.a12 = (float)(- A[0] * r2 + A[2] * r1) ;
+      oriented->frame.a22 = (float)(- A[1] * r2 + A[3] * r1) ;
     }
   }
 }
@@ -2122,11 +2122,11 @@ vl_covdet_extract_laplacian_scales (VlCovDet * self)
         scaled = & self->features[self->numFeatures -1] ;
       }
 
-      scaled->laplacianScaleScore = scales[j].score ;
-      scaled->frame.a11 *= scales[j].scale ;
-      scaled->frame.a21 *= scales[j].scale ;
-      scaled->frame.a12 *= scales[j].scale ;
-      scaled->frame.a22 *= scales[j].scale ;
+      scaled->laplacianScaleScore = (float)scales[j].score ;
+      scaled->frame.a11 *= (float)scales[j].scale ;
+      scaled->frame.a21 *= (float)scales[j].scale ;
+      scaled->frame.a12 *= (float)scales[j].scale ;
+      scaled->frame.a22 *= (float)scales[j].scale ;
     }
   }
   if (dropFeaturesWithoutScale) {

@@ -284,7 +284,7 @@ vl_hog_new (VlHogVariant variant, vl_size numOrientations, vl_bool transposed)
       /* along horizontal direction */
       double slope = y2 / x2 ;
       double offset = (1 - slope) * (self->glyphSize - 1) / 2 ;
-      vl_index skip = (1 - fabs(cos(angle))) / 2 * self->glyphSize ;
+      vl_index skip = (vl_index)((1 - fabs(cos(angle))) / 2 * self->glyphSize) ;
       vl_index i, j ;
       for (i = skip ; i < (signed)self->glyphSize - skip ; ++i) {
         j = vl_round_d(slope * i + offset) ;
@@ -298,7 +298,7 @@ vl_hog_new (VlHogVariant variant, vl_size numOrientations, vl_bool transposed)
       /* along vertical direction */
       double slope = x2 / y2 ;
       double offset = (1 - slope) * (self->glyphSize - 1) / 2 ;
-      vl_index skip = (1 - sin(angle)) / 2 * self->glyphSize ;
+      vl_index skip = (vl_index)((1 - sin(angle)) / 2 * self->glyphSize );
       vl_index i, j ;
       for (j = skip ; j < (signed)self->glyphSize - skip; ++j) {
         i = vl_round_d(slope * j + offset) ;
@@ -643,8 +643,8 @@ vl_hog_put_image (VlHog * self,
           iter += channelStride ;
         }
         grad = sqrtf(grad2) ;
-        gradx /= VL_MAX(grad, 1e-10) ;
-        grady /= VL_MAX(grad, 1e-10) ;
+        gradx /= (float)VL_MAX(grad, 1e-10) ;
+        grady /= (float)VL_MAX(grad, 1e-10) ;
       }
 
       /*
@@ -674,8 +674,8 @@ vl_hog_put_image (VlHog * self,
       if (self->useBilinearOrientationAssigment) {
         /* min(1.0,...) guards against small overflows causing NaNs */
         float angle0 = acosf(VL_MIN(orientationWeights[0],1.0)) ;
-        orientationWeights[1] = angle0 / (VL_PI / self->numOrientations) ;
-        orientationWeights[0] = 1 - orientationWeights[1] ;
+        orientationWeights[1] = (float)(angle0 / (VL_PI / self->numOrientations)) ;
+        orientationWeights[0] = 1.0f - orientationWeights[1] ;
       } else {
         orientationWeights[0] = 1 ;
         orientationBins[1] = -1 ;
@@ -694,14 +694,14 @@ vl_hog_put_image (VlHog * self,
         if (orientation < 0) continue ;
 
         /*  (x - (w-1)/2) / w = (x + 0.5)/w - 0.5 */        
-        hx = (x + 0.5) / cellSize - 0.5 ;
-        hy = (y + 0.5) / cellSize - 0.5 ;
+        hx = (float)((x + 0.5f) / cellSize - 0.5f) ;
+        hy = (float)((y + 0.5f) / cellSize - 0.5f) ;
         binx = vl_floor_f(hx) ;
         biny = vl_floor_f(hy) ;
         wx2 = hx - binx ;
         wy2 = hy - biny ;
-        wx1 = 1.0 - wx2 ;
-        wy1 = 1.0 - wy2 ;
+        wx1 = 1.0f - wx2 ;
+        wy1 = 1.0f - wy2 ;
 
         wx1 *= orientationWeights[o] ;
         wx2 *= orientationWeights[o] ;
@@ -782,7 +782,7 @@ void vl_hog_put_polar_field (VlHog * self,
 
       /*  (x - (w-1)/2) / w = (x + 0.5)/w - 0.5 */
 
-      ho = (float)thisAngle / angleStep ;
+      ho = (float)(thisAngle / angleStep) ;
       bino = vl_floor_f(ho) ;
       wo2 = ho - bino ;
       wo1 = 1.0f - wo2 ;
@@ -812,14 +812,14 @@ void vl_hog_put_polar_field (VlHog * self,
         orientation = orientationBins[o] ;
         if (orientation < 0) continue ;
         
-        hx = (x + 0.5) / cellSize - 0.5 ;
-        hy = (y + 0.5) / cellSize - 0.5 ;
+        hx = (x + 0.5f) / cellSize - 0.5f ;
+        hy = (y + 0.5f) / cellSize - 0.5f ;
         binx = vl_floor_f(hx) ;
         biny = vl_floor_f(hy) ;
         wx2 = hx - binx ;
         wy2 = hy - biny ;
-        wx1 = 1.0 - wx2 ;
-        wy1 = 1.0 - wy2 ;
+        wx1 = 1.0f - wx2 ;
+        wy1 = 1.0f - wy2 ;
         
         wx1 *= orientationWeights[o] ;
         wx2 *= orientationWeights[o] ;
@@ -1029,16 +1029,16 @@ vl_hog_extract (VlHog * self, float * features)
               ha = 0.5 * (ha1 + ha2 + ha3 + ha4) ;
               hb = 0.5 * (hb1 + hb2 + hb3 + hb4) ;
               hc = 0.5 * (hc1 + hc2 + hc3 + hc4) ;
-              *oiter = ha ;
-              *(oiter + hogStride * self->numOrientations) = hb ;
-              *(oiter + 2 * hogStride * self->numOrientations) = hc ;
+              *oiter = (float)ha ;
+              *(oiter + hogStride * self->numOrientations) = (float)hb ;
+              *(oiter + 2 * hogStride * self->numOrientations) = (float)hc ;
               break ;
 
             case VlHogVariantDalalTriggs :
-              *oiter = hc1 ;
-              *(oiter + hogStride * self->numOrientations) = hc2 ;
-              *(oiter + 2 * hogStride * self->numOrientations) = hc3 ;
-              *(oiter + 3 * hogStride * self->numOrientations) = hc4 ;
+              *oiter = (float)hc1 ;
+              *(oiter + hogStride * self->numOrientations) = (float)hc2 ;
+              *(oiter + 2 * hogStride * self->numOrientations) = (float)hc3 ;
+              *(oiter + 3 * hogStride * self->numOrientations) = (float)hc4 ;
               break ;
           }
           oiter += hogStride ;
@@ -1048,10 +1048,10 @@ vl_hog_extract (VlHog * self, float * features)
         switch (self->variant) {
           case VlHogVariantUoctti :
             oiter += 2 * hogStride * self->numOrientations ;
-            *oiter = (1.0f/sqrtf(18.0f)) * t1 ; oiter += hogStride ;
-            *oiter = (1.0f/sqrtf(18.0f)) * t2 ; oiter += hogStride ;
-            *oiter = (1.0f/sqrtf(18.0f)) * t3 ; oiter += hogStride ;
-            *oiter = (1.0f/sqrtf(18.0f)) * t4 ; oiter += hogStride ;
+            *oiter = (float)((1.0f/sqrtf(18.0f)) * t1) ; oiter += hogStride ;
+            *oiter = (float)((1.0f/sqrtf(18.0f)) * t2) ; oiter += hogStride ;
+            *oiter = (float)((1.0f/sqrtf(18.0f)) * t3) ; oiter += hogStride ;
+            *oiter = (float)((1.0f/sqrtf(18.0f)) * t4) ; oiter += hogStride ;
             break ;
 
           case VlHogVariantDalalTriggs :
