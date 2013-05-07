@@ -182,6 +182,8 @@ VL_INLINE vl_bool vl_cpu_has_sse3 () ;
 VL_INLINE vl_bool vl_cpu_has_sse2 () ;
 VL_INLINE vl_size vl_get_num_cpus () ;
 VL_EXPORT VlRand * vl_get_rand () ;
+VL_EXPORT void vl_init();
+VL_EXPORT void vl_destroy();
 
 /** @} */
 
