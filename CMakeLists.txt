@@ -106,7 +106,7 @@ file( GLOB_RECURSE ${PROJECT_NAME}_MEXSRC
   toolbox/slic/vl_slic.c
 )
 
-SET_SOURCE_FILES_PROPERTIES("${${PROJECT_NAME}_LIBSRC}" PROPERTIES LANGUAGE CXX)
+
 
 include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}
@@ -123,6 +123,8 @@ add_library( ${PROJECT_NAME}
                 
                 ${${PROJECT_NAME}_LIBSRC} 
                 )
+
+SET_TARGET_PROPERTIES( ${PROJECT_NAME} PROPERTIES COMPILE_FLAGS /TP)
 
 set_target_properties( ${PROJECT_NAME}
     PROPERTIES
