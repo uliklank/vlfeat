@@ -581,7 +581,7 @@ VlEnumerator vlCovdetMethods [VL_COVDET_METHOD_NUM] = {
 VlCovDet *
 vl_covdet_new (VlCovDetMethod method)
 {
-  VlCovDet * self = vl_calloc(sizeof(VlCovDet),1) ;
+  VlCovDet * self = (VlCovDet *)vl_calloc(sizeof(VlCovDet),1) ;
   self->method = method ;
   self->octaveResolution = 3 ;
   self->firstOctave = -1 ;
@@ -925,9 +925,9 @@ _vl_harris_response (float * harris,
   float * LyLy ;
   float * LxLy ;
 
-  LxLx = vl_malloc(sizeof(float) * width * height) ;
-  LyLy = vl_malloc(sizeof(float) * width * height) ;
-  LxLy = vl_malloc(sizeof(float) * width * height) ;
+  LxLx = (float*)vl_malloc(sizeof(float) * width * height) ;
+  LyLy = (float*)vl_malloc(sizeof(float) * width * height) ;
+  LxLy = (float*)vl_malloc(sizeof(float) * width * height) ;
 
   vl_imgradient_f (LxLx, LyLy, 1, width, image, width, height, width) ;
 
@@ -1038,9 +1038,9 @@ vl_covdet_detect (VlCovDet * self)
   if (self->method == VL_COVDET_METHOD_HARRIS_LAPLACE ||
       self->method == VL_COVDET_METHOD_MULTISCALE_HARRIS) {
     VlScaleSpaceOctaveGeometry oct = vl_scalespace_get_octave_geometry(self->gss, geom.firstOctave) ;
-    levelxx = vl_malloc(oct.width * oct.height * sizeof(float)) ;
-    levelyy = vl_malloc(oct.width * oct.height * sizeof(float)) ;
-    levelxy = vl_malloc(oct.width * oct.height * sizeof(float)) ;
+    levelxx = (float*)vl_malloc(oct.width * oct.height * sizeof(float)) ;
+    levelyy = (float*)vl_malloc(oct.width * oct.height * sizeof(float)) ;
+    levelxy = (float*)vl_malloc(oct.width * oct.height * sizeof(float)) ;
   }
 
   /* compute cornerness ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
@@ -1114,8 +1114,8 @@ vl_covdet_detect (VlCovDet * self)
             ok &= refined.edgeScore < self->edgeThreshold ;
             if (ok) {
               double sigma = cgeom.sigma0 *
-              pow(2.0, o + (refined.z - cgeom.octaveFirstSubdivision)
-                  / cgeom.octaveResolution) ;
+              pow(2.0, (double)(o + (refined.z - cgeom.octaveFirstSubdivision)
+                  / cgeom.octaveResolution)) ;
               feature.frame.x = (float)(refined.x * step);
               feature.frame.y = (float)(refined.y * step);
               feature.frame.a11 = (float)sigma ;
@@ -1733,7 +1733,7 @@ vl_covdet_extract_affine_shape (VlCovDet * self)
 {
   vl_index i, j = 0 ;
   vl_size numFeatures = vl_covdet_get_num_features(self) ;
-  VlCovDetFeature * feature = vl_covdet_get_features(self);
+  VlCovDetFeature * feature = (VlCovDetFeature*)vl_covdet_get_features(self);
   for (i = 0 ; i < (signed)numFeatures ; ++i) {
     int status ;
     VlFrameOrientedEllipse adapted ;
@@ -1755,8 +1755,8 @@ static int
 _vl_covdet_compare_orientations_descending (void const * a_,
                                             void const * b_)
 {
-  VlCovDetFeatureOrientation const * a = a_ ;
-  VlCovDetFeatureOrientation const * b = b_ ;
+  VlCovDetFeatureOrientation const * a = (VlCovDetFeatureOrientation const *)a_ ;
+  VlCovDetFeatureOrientation const * b = (VlCovDetFeatureOrientation const *)b_ ;
   if (a->score > b->score) return -1 ;
   if (a->score < b->score) return +1 ;
   return 0 ;

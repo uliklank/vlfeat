@@ -530,7 +530,7 @@ vl_configuration_to_string_copy ()
 
   while (string == 0) {
     if (length > 0) {
-      string = vl_malloc(sizeof(char) * length) ;
+      string = (char*)vl_malloc(sizeof(char) * length) ;
       if (string == NULL) break ;
     }
     length = snprintf(string, length,
@@ -885,7 +885,7 @@ vl_thread_specific_state_new ()
 #if defined(DEBUG)
   printf("VLFeat thread constructor called\n") ;
 #endif
-  self = malloc(sizeof(VlThreadSpecificState)) ;
+  self = (VlThreadSpecificState*)malloc(sizeof(VlThreadSpecificState)) ;
   self->lastError = 0 ;
   self->lastErrorMessage[0] = 0 ;
 #if defined(VL_OS_WIN)
@@ -1062,7 +1062,7 @@ vl_destructor ()
        using the library, so this is fine.
      */
     VlThreadSpecificState * threadState =
-       TlsGetValue(state->tlsIndex) ;
+       (VlThreadSpecificState *)TlsGetValue(state->tlsIndex) ;
     if (threadState) {
       vl_thread_specific_state_delete (threadState) ;
       TlsSetValue(state->tlsIndex, NULL) ;

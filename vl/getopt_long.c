@@ -240,7 +240,7 @@ getopt_long(int argc, char *const argv[],
   optopt = (int) *place++ ;
 
   /* search charcater in option list */
-  oli = strchr(optstring, optopt);
+  oli = (char*)strchr(optstring, optopt);
 
   /* short option not found */
   if (!oli) {

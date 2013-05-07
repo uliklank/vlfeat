@@ -157,7 +157,7 @@ void vl_aib_normalize_P (double * P, vl_uint nelem)
 
 vl_uint *vl_aib_new_nodelist (vl_uint nentries)
 {
-    vl_uint * nodelist = vl_malloc(sizeof(vl_uint)*nentries);
+    vl_uint * nodelist = (vl_uint * )vl_malloc(sizeof(vl_uint)*nentries);
     vl_uint n;
     for(n=0; n<nentries; n++)
         nodelist[n] = n;
@@ -179,7 +179,7 @@ vl_uint *vl_aib_new_nodelist (vl_uint nentries)
 
 double * vl_aib_new_Px(double * Pcx, vl_uint nvalues, vl_uint nlabels)
 {
-    double * Px = vl_malloc(sizeof(double)*nvalues);
+    double * Px = (double *)vl_malloc(sizeof(double)*nvalues);
     vl_uint r,c;
     for(r=0; r<nvalues; r++)
     {
@@ -204,7 +204,7 @@ double * vl_aib_new_Px(double * Pcx, vl_uint nvalues, vl_uint nlabels)
 
 double * vl_aib_new_Pc(double * Pcx, vl_uint nvalues, vl_uint nlabels)
 {
-    double * Pc = vl_malloc(sizeof(double)*nlabels);
+    double * Pc = (double *)vl_malloc(sizeof(double)*nlabels);
     vl_uint r, c;
     for(c=0; c<nlabels; c++)
     {
@@ -269,7 +269,7 @@ void vl_aib_min_beta
  **/
 
 void
-vl_aib_merge_nodes (VlAIB * aib, vl_uint i, vl_uint j, vl_uint new)
+vl_aib_merge_nodes (VlAIB * aib, vl_uint i, vl_uint j, vl_uint newval)
 {
   vl_uint last_entry = aib->nentries - 1 ;
   vl_uint c, n ;
@@ -286,7 +286,7 @@ vl_aib_merge_nodes (VlAIB * aib, vl_uint i, vl_uint j, vl_uint new)
 
   aib-> Px   [i] += aib->Px[j] ;
   aib-> beta [i]  = BETA_MAX ;
-  aib-> nodes[i]  = new ;
+  aib-> nodes[i]  = newval ;
 
   for (c = 0; c < aib->nlabels; c++)
     aib-> Pcx [i*aib->nlabels + c] += aib-> Pcx [j*aib->nlabels + c] ;
@@ -356,7 +356,7 @@ vl_aib_update_beta (VlAIB * aib)
   vl_uint i;
   double * Px  = aib->Px;
   double * Pcx = aib->Pcx;
-  double * tmp = vl_malloc(sizeof(double)*aib->nentries);
+  double * tmp = (double*)vl_malloc(sizeof(double)*aib->nentries);
   vl_uint a, b, c ;
 
   /*
@@ -488,7 +488,7 @@ void vl_aib_calculate_information(VlAIB * aib, double * I, double * H)
  **/
 VlAIB * vl_aib_new(double * Pcx, vl_uint nvalues, vl_uint nlabels)
 {
-    VlAIB * aib = vl_malloc(sizeof(VlAIB));
+    VlAIB * aib = ( VlAIB *)vl_malloc(sizeof(VlAIB));
     vl_uint i ;
 
     aib->verbosity = 0 ;
@@ -503,8 +503,8 @@ VlAIB * vl_aib_new(double * Pcx, vl_uint nvalues, vl_uint nlabels)
 
     aib->nentries = aib->nvalues ;
     aib->nodes    = vl_aib_new_nodelist(aib->nentries) ;
-    aib->beta     = vl_malloc(sizeof(double) * aib->nentries) ;
-    aib->bidx     = vl_malloc(sizeof(vl_uint)   * aib->nentries) ;
+    aib->beta     = (double*)vl_malloc(sizeof(double) * aib->nentries) ;
+    aib->bidx     = (vl_uint*)vl_malloc(sizeof(vl_uint)   * aib->nentries) ;
 
     for(i = 0 ; i < aib->nentries ; i++)
       aib->beta [i] = BETA_MAX ;
@@ -513,13 +513,13 @@ VlAIB * vl_aib_new(double * Pcx, vl_uint nvalues, vl_uint nlabels)
     aib->nwhich = aib->nvalues;
     aib->which  = vl_aib_new_nodelist (aib->nwhich) ;
 
-    aib->parents = vl_malloc(sizeof(vl_uint)*(aib->nvalues*2-1));
+    aib->parents = (vl_uint*)vl_malloc(sizeof(vl_uint)*(aib->nvalues*2-1));
     /* Initially, all parents point to a nonexistent node */
     for (i = 0 ; i < 2 * aib->nvalues - 1 ; i++)
       aib->parents [i] = 2 * aib->nvalues ;
 
     /* Allocate cost output vector */
-    aib->costs = vl_malloc (sizeof(double) * (aib->nvalues - 1 + 1)) ;
+    aib->costs =(double*)vl_malloc (sizeof(double) * (aib->nvalues - 1 + 1)) ;
 
 
     return aib ;

@@ -428,7 +428,7 @@ _vl_x86cpu_info_to_string_copy (VlX86CpuInfo const *self)
   int length = 0 ;
   while (string == 0) {
     if (length > 0) {
-      string = vl_malloc(sizeof(char) * length) ;
+      string = (char*)vl_malloc(sizeof(char) * length) ;
       if (string == NULL) break ;
     }
     length = snprintf(string, length, "%s%s%s%s%s%s%s",
@@ -521,7 +521,7 @@ snprintf(compilerString, 1024,
     int length = 0 ;
     while (string == 0) {
       if (length > 0) {
-        string = vl_malloc(sizeof(char) * length) ;
+        string = (char*)vl_malloc(sizeof(char) * length) ;
         if (string == NULL) break ;
       }
       length = snprintf(string, length, "%s, %s, %s",

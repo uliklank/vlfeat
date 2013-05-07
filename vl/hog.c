@@ -174,7 +174,7 @@ VlHog *
 vl_hog_new (VlHogVariant variant, vl_size numOrientations, vl_bool transposed)
 {
   vl_index o, k ;
-  VlHog * self = vl_calloc(1, sizeof(VlHog)) ;
+  VlHog * self = (VlHog*)vl_calloc(1, sizeof(VlHog)) ;
 
   assert(numOrientations >= 1) ;
 
@@ -183,8 +183,8 @@ vl_hog_new (VlHogVariant variant, vl_size numOrientations, vl_bool transposed)
   self->glyphSize = 21 ;
   self->transposed = transposed ;
   self->useBilinearOrientationAssigment = VL_FALSE ;
-  self->orientationX = vl_malloc(sizeof(float) * self->numOrientations) ;
-  self->orientationY = vl_malloc(sizeof(float) * self->numOrientations) ;
+  self->orientationX = (float*)vl_malloc(sizeof(float) * self->numOrientations) ;
+  self->orientationY = (float*)vl_malloc(sizeof(float) * self->numOrientations) ;
 
   /*
    Create a vector along the center of each orientation bin. These
@@ -230,7 +230,7 @@ vl_hog_new (VlHogVariant variant, vl_size numOrientations, vl_bool transposed)
    and to itself for the undirected one).
    */
 
-  self->permutation = vl_malloc(self->dimension * sizeof(vl_index)) ;
+  self->permutation = (vl_index*)vl_malloc(self->dimension * sizeof(vl_index)) ;
   switch (self->variant) {
     case VlHogVariantUoctti:
       for(o = 0 ; o < (signed)self->numOrientations ; ++o) {
@@ -273,7 +273,7 @@ vl_hog_new (VlHogVariant variant, vl_size numOrientations, vl_bool transposed)
    image edges. If the object is configured to work on transposed image,
    the glyphs images are also stored in column-major.
    */
-  self->glyphs = vl_calloc(self->glyphSize * self->glyphSize * self->numOrientations, sizeof(float)) ;
+  self->glyphs = (float*)vl_calloc(self->glyphSize * self->glyphSize * self->numOrientations, sizeof(float)) ;
 #define atglyph(x,y,k) self->glyphs[(x) + self->glyphSize * (y) + self->glyphSize * self->glyphSize * (k)]
   for (o = 0 ; o < (signed)self->numOrientations ; ++o) {
     double angle = fmod(o * VL_PI / self->numOrientations + VL_PI/2, VL_PI) ;
@@ -566,8 +566,8 @@ vl_hog_prepare_buffers (VlHog * self, vl_size width, vl_size height, vl_size cel
     self->hogNorm = NULL ;
   }
 
-  self->hog = vl_calloc(hogWidth * hogHeight * self->numOrientations * 2, sizeof(float)) ;
-  self->hogNorm = vl_calloc(hogWidth * hogHeight, sizeof(float)) ;
+  self->hog = (float*)vl_calloc(hogWidth * hogHeight * self->numOrientations * 2, sizeof(float)) ;
+  self->hogNorm = (float*)vl_calloc(hogWidth * hogHeight, sizeof(float)) ;
   self->hogWidth = hogWidth ;
   self->hogHeight = hogHeight ;
 }

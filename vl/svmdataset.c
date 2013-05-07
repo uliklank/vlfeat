@@ -149,7 +149,7 @@ VL_XCAT(vl_svmdataset_innerproduct_,SFX) (const void* data, const vl_uindex elem
   tData  = (T*) sdata->data ;
 
   if (sdata->mapFunc) {
-    double *temp = vl_malloc(sizeof(double) * sdata->order) ;
+    double *temp = (double*)vl_malloc(sizeof(double) * sdata->order) ;
     for (i = 0; i < sdata->dimension; i++) {
       sdata->mapFunc(sdata->map,temp,1,tData[element*sdata->dimension + i]);
 
@@ -194,7 +194,7 @@ VL_XCAT(vl_svmdataset_accumulator_,SFX)(const void* data,
   tData  = (T*) sdata->data ;
 
   if (sdata->mapFunc) {
-    double * temp = vl_malloc(sizeof(double)*sdata->order) ;
+    double * temp = (double*)vl_malloc(sizeof(double)*sdata->order) ;
     for (i = 0; i < sdata->dimension; i++) {
       sdata->mapFunc(sdata->map,temp,1,tData[element*sdata->dimension + i]) ;
       for (j = 0; j < sdata->order; j++){

@@ -200,9 +200,9 @@ vl_slic_segment (vl_uint32 * segmentation,
 #define atimage(x,y,k) image[(x)+(y)*width+(k)*width*height]
 #define atEdgeMap(x,y) edgeMap[(x)+(y)*width]
 
-  edgeMap = vl_calloc(numPixels, sizeof(float)) ;
-  masses = vl_malloc(sizeof(vl_uint32) * numPixels) ;
-  centers = vl_malloc(sizeof(float) * (2 + numChannels) * numRegions) ;
+  edgeMap = (float*)vl_calloc(numPixels, sizeof(float)) ;
+  masses = (vl_uint32*)vl_malloc(sizeof(vl_uint32) * numPixels) ;
+  centers = (float*)vl_malloc(sizeof(float) * (2 + numChannels) * numRegions) ;
 
   /* compute edge map (gradient strength) */
   for (k = 0 ; k < (signed)numChannels ; ++k) {
@@ -337,8 +337,8 @@ vl_slic_segment (vl_uint32 * segmentation,
 
   /* elimiate small regions */
   {
-    vl_uint32 * cleaned = vl_calloc(numPixels, sizeof(vl_uint32)) ;
-    vl_uindex * segment = vl_malloc(sizeof(vl_uindex) * numPixels) ;
+    vl_uint32 * cleaned = (vl_uint32*)vl_calloc(numPixels, sizeof(vl_uint32)) ;
+    vl_uindex * segment = (vl_uindex*)vl_malloc(sizeof(vl_uindex) * numPixels) ;
     vl_size segmentSize ;
     vl_uint32 label ;
     vl_uint32 cleanedLabel ;

@@ -213,7 +213,7 @@ VL_EXPORT VlKMeans *
 vl_kmeans_new (vl_type dataType,
                VlVectorComparisonType distance)
 {
-  VlKMeans * self = vl_malloc(sizeof(VlKMeans)) ;
+  VlKMeans * self = (VlKMeans *)vl_malloc(sizeof(VlKMeans)) ;
 
   self->algorithm = VlKMeansLloyd ;
   self->distance = distance ;
@@ -240,7 +240,7 @@ vl_kmeans_new (vl_type dataType,
 VL_EXPORT VlKMeans *
 vl_kmeans_new_copy (VlKMeans const * kmeans)
 {
-  VlKMeans * self = vl_malloc(sizeof(VlKMeans)) ;
+  VlKMeans * self = (VlKMeans *)vl_malloc(sizeof(VlKMeans)) ;
 
   self->algorithm = kmeans->algorithm ;
   self->distance = kmeans->distance ;
@@ -344,13 +344,13 @@ VL_XCAT(_vl_kmeans_seed_centers_with_rand_data_, SFX)
   self->centers = vl_malloc (sizeof(TYPE) * dimension * numCenters) ;
 
   {
-    vl_uindex * perm = vl_malloc (sizeof(vl_uindex) * numData) ;
+    vl_uindex * perm = (vl_uindex *)vl_malloc (sizeof(vl_uindex) * numData) ;
 #if (FLT == VL_TYPE_FLOAT)
     VlFloatVectorComparisonFunction distFn = vl_get_vector_comparison_function_f(self->distance) ;
 #else
     VlDoubleVectorComparisonFunction distFn = vl_get_vector_comparison_function_d(self->distance) ;
 #endif
-    TYPE * distances = vl_malloc (sizeof(TYPE) * numCenters) ;
+    TYPE * distances = (TYPE*)vl_malloc (sizeof(TYPE) * numCenters) ;
 
     /* get a random permutation of the data point */
     for (i = 0 ; i < numData ; ++i) perm[i] = i ;
@@ -397,8 +397,8 @@ VL_XCAT(_vl_kmeans_seed_centers_plus_plus_, SFX)
 {
   vl_uindex x, c ;
   VlRand * rand = vl_get_rand () ;
-  TYPE * distances = vl_malloc (sizeof(TYPE) * numData) ;
-  TYPE * minDistances = vl_malloc (sizeof(TYPE) * numData) ;
+  TYPE * distances = (TYPE*)vl_malloc (sizeof(TYPE) * numData) ;
+  TYPE * minDistances = (TYPE*)vl_malloc (sizeof(TYPE) * numData) ;
 #if (FLT == VL_TYPE_FLOAT)
   VlFloatVectorComparisonFunction distFn = vl_get_vector_comparison_function_f(self->distance) ;
 #else
@@ -468,7 +468,7 @@ VL_XCAT(_vl_kmeans_quantize_, SFX)
 #else
   VlDoubleVectorComparisonFunction distFn = vl_get_vector_comparison_function_d(self->distance) ;
 #endif
-  TYPE * distanceToCenters = vl_malloc (sizeof(TYPE) * self->numCenters) ;
+  TYPE * distanceToCenters = (TYPE*)vl_malloc (sizeof(TYPE) * self->numCenters) ;
 
   for (i = 0 ; i < numData ; ++i) {
     vl_size k ;
@@ -553,9 +553,9 @@ VL_XCAT(_vl_kmeans_refine_centers_lloyd_, SFX)
   vl_bool allDone ;
   double previousEnergy = VL_INFINITY_D ;
   double energy ;
-  TYPE * distances = vl_malloc (sizeof(TYPE) * numData) ;
-  vl_uint32 * assignments = vl_malloc (sizeof(vl_uint32) * numData) ;
-  vl_size * clusterMasses = vl_malloc (sizeof(vl_size) * numData) ;
+  TYPE * distances = (TYPE*)vl_malloc (sizeof(TYPE) * numData) ;
+  vl_uint32 * assignments = (vl_uint32*)vl_malloc (sizeof(vl_uint32) * numData) ;
+  vl_size * clusterMasses = (vl_size*)vl_malloc (sizeof(vl_size) * numData) ;
   vl_uint32 * permutations = NULL ;
   vl_size * numSeenSoFar = NULL ;
   VlRand * rand = vl_get_rand () ;
@@ -563,8 +563,8 @@ VL_XCAT(_vl_kmeans_refine_centers_lloyd_, SFX)
   vl_size numRestartedCenters = 0 ;
 
   if (self->distance == VlDistanceL1) {
-    permutations = vl_malloc(sizeof(vl_uint32) * numData * self->dimension) ;
-    numSeenSoFar = vl_malloc(sizeof(vl_size) * self->numCenters) ;
+    permutations = (vl_uint32*)vl_malloc(sizeof(vl_uint32) * numData * self->dimension) ;
+    numSeenSoFar = (vl_size*)vl_malloc(sizeof(vl_size) * self->numCenters) ;
     VL_XCAT(_vl_kmeans_sort_data_helper_, SFX)(self, permutations, data, numData) ;
   }
 
@@ -694,9 +694,9 @@ VL_XCAT(_vl_kmeans_update_center_distances_, SFX)
                                        self->numCenters *
                                        self->numCenters) ;
   }
-  VL_XCAT(vl_eval_vector_comparison_on_all_pairs_, SFX)(self->centerDistances,
+  VL_XCAT(vl_eval_vector_comparison_on_all_pairs_, SFX)((TYPE*)self->centerDistances,
                                                         self->dimension,
-                                                        self->centers, self->numCenters,
+                                                        (TYPE*)self->centers, self->numCenters,
                                                         NULL, 0,
                                                         distFn) ;
   return self->numCenters * (self->numCenters - 1) / 2 ;
@@ -713,9 +713,9 @@ VL_XCAT(_vl_kmeans_refine_centers_elkan_, SFX)
   vl_size d, iteration, x ;
   vl_uint32 c, j ;
   vl_bool allDone ;
-  TYPE * distances = vl_malloc (sizeof(TYPE) * numData) ;
-  vl_uint32 * assignments = vl_malloc (sizeof(vl_uint32) * numData) ;
-  vl_size * clusterMasses = vl_malloc (sizeof(vl_size) * numData) ;
+  TYPE * distances = (TYPE*)vl_malloc (sizeof(TYPE) * numData) ;
+  vl_uint32 * assignments = (vl_uint32*)vl_malloc (sizeof(vl_uint32) * numData) ;
+  vl_size * clusterMasses = (vl_size*)vl_malloc (sizeof(vl_size) * numData) ;
   VlRand * rand = vl_get_rand () ;
 
 #if (FLT == VL_TYPE_FLOAT)
@@ -724,12 +724,12 @@ VL_XCAT(_vl_kmeans_refine_centers_elkan_, SFX)
     VlDoubleVectorComparisonFunction distFn = vl_get_vector_comparison_function_d(self->distance) ;
 #endif
 
-  TYPE * nextCenterDistances = vl_malloc (sizeof(TYPE) * self->numCenters) ;
-  TYPE * pointToClosestCenterUB = vl_malloc (sizeof(TYPE) * numData) ;
-  vl_bool * pointToClosestCenterUBIsStrict = vl_malloc (sizeof(vl_bool) * numData) ;
-  TYPE * pointToCenterLB = vl_malloc (sizeof(TYPE) * numData * self->numCenters) ;
-  TYPE * newCenters = vl_malloc(sizeof(TYPE) * self->dimension * self->numCenters) ;
-  TYPE * centerToNewCenterDistances = vl_malloc (sizeof(TYPE) * self->numCenters) ;
+  TYPE * nextCenterDistances = (TYPE*)vl_malloc (sizeof(TYPE) * self->numCenters) ;
+  TYPE * pointToClosestCenterUB = (TYPE*)vl_malloc (sizeof(TYPE) * numData) ;
+  vl_bool * pointToClosestCenterUBIsStrict = (vl_bool*)vl_malloc (sizeof(vl_bool) * numData) ;
+  TYPE * pointToCenterLB = (TYPE*)vl_malloc (sizeof(TYPE) * numData * self->numCenters) ;
+  TYPE * newCenters = (TYPE*)vl_malloc(sizeof(TYPE) * self->dimension * self->numCenters) ;
+  TYPE * centerToNewCenterDistances = (TYPE*)vl_malloc (sizeof(TYPE) * self->numCenters) ;
 
   vl_uint32 * permutations = NULL ;
   vl_size * numSeenSoFar = NULL ;
@@ -745,8 +745,8 @@ VL_XCAT(_vl_kmeans_refine_centers_elkan_, SFX)
   vl_size totNumRestartedCenters = 0 ;
 
   if (self->distance == VlDistanceL1) {
-    permutations = vl_malloc(sizeof(vl_uint32) * numData * self->dimension) ;
-    numSeenSoFar = vl_malloc(sizeof(vl_size) * self->numCenters) ;
+    permutations = (vl_uint32*)vl_malloc(sizeof(vl_uint32) * numData * self->dimension) ;
+    numSeenSoFar = (vl_size*)vl_malloc(sizeof(vl_size) * self->numCenters) ;
     VL_XCAT(_vl_kmeans_sort_data_helper_, SFX)(self, permutations, data, numData) ;
   }
 
@@ -922,7 +922,7 @@ VL_XCAT(_vl_kmeans_refine_centers_elkan_, SFX)
 
     /* make the new centers current */
     {
-      TYPE * tmp = self->centers ;
+      TYPE * tmp = (TYPE*)self->centers ;
       self->centers = newCenters ;
       newCenters = tmp ;
     }
@@ -1427,11 +1427,11 @@ vl_kmeans_quantize
   switch (self->dataType) {
     case VL_TYPE_FLOAT :
       _vl_kmeans_quantize_f
-      (self, assignments, distances, (float const *)data, numData) ;
+      (self, assignments, (float*)distances, (float const *)data, numData) ;
       break ;
     case VL_TYPE_DOUBLE :
       _vl_kmeans_quantize_d
-      (self, assignments, distances, (double const *)data, numData) ;
+      (self, assignments, (double*)distances, (double const *)data, numData) ;
       break ;
     default:
       abort() ;

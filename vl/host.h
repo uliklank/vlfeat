@@ -317,17 +317,25 @@ defined(__DOXYGEN__)
 #  define VL_INLINE static __inline
 #  define snprintf _snprintf
 #  define isnan _isnan
-#  ifdef VL_BUILD_DLL
-#    ifdef __cplusplus
-#      define VL_EXPORT extern "C" __declspec(dllexport)
+#  ifdef VL_BUILD
+#    ifdef VL_BUILD_DLL
+#      ifdef __cplusplus
+#        define VL_EXPORT extern "C" __declspec(dllexport)
+#      else
+#        define VL_EXPORT extern __declspec(dllexport)
+#      endif
 #    else
-#      define VL_EXPORT extern __declspec(dllexport)
+#        define VL_EXPORT extern
 #    endif
 #  else
-#    ifdef __cplusplus
-#      define VL_EXPORT extern "C" __declspec(dllimport)
+#    ifdef VL_BUILD_DLL
+#      ifdef __cplusplus
+#        define VL_EXPORT extern "C" __declspec(dllimport)
+#      else
+#        define VL_EXPORT extern __declspec(dllimport)
+#      endif
 #    else
-#      define VL_EXPORT extern __declspec(dllimport)
+#        define VL_EXPORT extern
 #    endif
 #  endif
 #endif

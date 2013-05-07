@@ -316,16 +316,16 @@ vl_scalespace_new_with_geometry (VlScaleSpaceGeometry geom)
 {
   vl_index o ;
   vl_size totalNumLevels = geom.octaveLastSubdivision - geom.octaveFirstSubdivision + 1 ;
-  VlScaleSpace *self = vl_calloc(1, sizeof(VlScaleSpace)) ;
+  VlScaleSpace *self = (VlScaleSpace*)vl_calloc(1, sizeof(VlScaleSpace)) ;
   if (self == NULL) goto err_alloc_self ;
 
   self->geom = geom ;
-  self->octaves = vl_calloc(geom.lastOctave - geom.firstOctave + 1, sizeof(float*)) ;
+  self->octaves = (float**)vl_calloc(geom.lastOctave - geom.firstOctave + 1, sizeof(float*)) ;
   if (self->octaves == NULL) goto err_alloc_octaves ;
   for (o = self->geom.firstOctave ; o <= self->geom.lastOctave ; ++o) {
     VlScaleSpaceOctaveGeometry ogeom = vl_scalespace_get_octave_geometry(self,o) ;
     vl_size octaveSize = ogeom.width * ogeom.height * totalNumLevels ;
-    self->octaves[o - self->geom.firstOctave] = vl_malloc(octaveSize * sizeof(float)) ;
+    self->octaves[o - self->geom.firstOctave] = (float*)vl_malloc(octaveSize * sizeof(float)) ;
     if (self->octaves[o - self->geom.firstOctave] == NULL) goto err_alloc_octaves_o ;
   }
   return self ;

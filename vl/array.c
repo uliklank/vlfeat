@@ -148,7 +148,7 @@ vl_array_dealloc (VlArray * self)
 VL_EXPORT VlArray *
 vl_array_new (vl_type type, vl_size numDimensions, vl_size const * dimensions)
 {
-  VlArray * self = vl_malloc(sizeof(VlArray)) ;
+  VlArray * self = ( VlArray *)vl_malloc(sizeof(VlArray)) ;
   return vl_array_init(self, type, numDimensions, dimensions) ;
 }
 
@@ -176,7 +176,7 @@ VL_EXPORT VlArray *
 vl_array_new_envelope (void * data, vl_type type,
                        vl_size numDimensions, vl_size const * dimensions)
 {
-  VlArray * self = vl_malloc(sizeof(VlArray)) ;
+  VlArray * self =  (VlArray*)vl_malloc(sizeof(VlArray)) ;
   return vl_array_init_envelope(self, data, type, numDimensions, dimensions) ;
 }
 

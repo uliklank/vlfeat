@@ -302,7 +302,7 @@ vl_homogeneouskernelmap_new (VlHomogeneousKernelType kernelType,
                              VlHomogeneousKernelMapWindowType windowType)
 {
   int tableWidth, tableHeight ;
-  VlHomogeneousKernelMap * self = vl_malloc(sizeof(VlHomogeneousKernelMap)) ;
+  VlHomogeneousKernelMap * self = (VlHomogeneousKernelMap*)vl_malloc(sizeof(VlHomogeneousKernelMap)) ;
   if (! self) return NULL ;
 
   assert(gamma > 0) ;
@@ -318,8 +318,8 @@ vl_homogeneouskernelmap_new (VlHomogeneousKernelType kernelType,
     switch (windowType) {
     case VlHomogeneousKernelMapWindowUniform:
       switch (kernelType) {
-      case VlHomogeneousKernelChi2:         period = 5.86 * sqrt(order + 0)  + 3.65 ; break ;
-      case VlHomogeneousKernelJS:           period = 6.64 * sqrt(order + 0)  + 7.24 ; break ;
+      case VlHomogeneousKernelChi2:         period = 5.86 * sqrt(order + 0.)  + 3.65 ; break ;
+      case VlHomogeneousKernelJS:           period = 6.64 * sqrt(order + 0.)  + 7.24 ; break ;
       case VlHomogeneousKernelIntersection: period = 2.38 * log(order + 0.8) + 5.6 ; break ;
       }
       break ;
@@ -346,7 +346,7 @@ vl_homogeneouskernelmap_new (VlHomogeneousKernelType kernelType,
 
   tableHeight = (int) (2*self->order + 1) ;
   tableWidth = (int) (self->numSubdivisions * (self->maxExponent - self->minExponent + 1)) ;
-  self->table = vl_malloc (sizeof(double) *
+  self->table = (double*)vl_malloc (sizeof(double) *
                            (tableHeight * tableWidth + 2*(1+self->order))) ;
   if (! self->table) {
     vl_free(self) ;

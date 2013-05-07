@@ -294,7 +294,7 @@ VL_EXPORT VlKDForest *
 vl_kdforest_new (vl_type dataType,
                  vl_size dimension, vl_size numTrees)
 {
-  VlKDForest * self = vl_malloc (sizeof(VlKDForest)) ;
+  VlKDForest * self = (VlKDForest *)vl_malloc (sizeof(VlKDForest)) ;
 
   assert(dataType == VL_TYPE_FLOAT || dataType == VL_TYPE_DOUBLE) ;
   assert(dimension >= 1) ;
@@ -379,18 +379,18 @@ vl_kdforest_build (VlKDForest * self, vl_size numData, void const * data)
   /* need to check: if alredy built, clean first */
   self->data = data ;
   self->numData = numData ;
-  self->trees = vl_malloc (sizeof(VlKDTree*) * self->numTrees) ;
+  self->trees = (VlKDTree**)vl_malloc (sizeof(VlKDTree*) * self->numTrees) ;
 
   for (ti = 0 ; ti < self->numTrees ; ++ ti) {
-    self->trees[ti] = vl_malloc (sizeof(VlKDTree)) ;
-    self->trees[ti]->dataIndex = vl_malloc (sizeof(VlKDTreeDataIndexEntry) * self->numData) ;
+    self->trees[ti] =  (VlKDTree*)vl_malloc (sizeof(VlKDTree)) ;
+    self->trees[ti]->dataIndex = (VlKDTreeDataIndexEntry*) vl_malloc (sizeof(VlKDTreeDataIndexEntry) * self->numData) ;
     for (di = 0 ; di < self->numData ; ++ di) {
       self->trees[ti]->dataIndex[di].index = di ;
     }
     self->trees[ti]->numUsedNodes = 0 ;
     /* num. nodes of a complete binary tree with numData leaves */
     self->trees[ti]->numAllocatedNodes = 2 * self->numData - 1 ;
-    self->trees[ti]->nodes = vl_malloc (sizeof(VlKDTreeNode) * self->trees[ti]->numAllocatedNodes) ;
+    self->trees[ti]->nodes = (VlKDTreeNode*)vl_malloc (sizeof(VlKDTreeNode) * self->trees[ti]->numAllocatedNodes) ;
     self->trees[ti]->depth = 0 ;
     vl_kdtree_build_recursively (self, self->trees[ti],
                                  vl_kdtree_node_new(self->trees[ti], 0), 0,
@@ -614,11 +614,11 @@ vl_kdforest_query (VlKDForest * self,
     for (ti = 0 ; ti < self->numTrees ; ++ti) {
       maxNumNodes += self->trees[ti]->numUsedNodes ;
     }
-    self -> searchHeapArray = vl_malloc (sizeof(VlKDForestSearchState) * maxNumNodes) ;
-    self -> searchIdBook = vl_calloc (sizeof(vl_uindex), self->numData) ;
+    self -> searchHeapArray = (VlKDForestSearchState*)vl_malloc (sizeof(VlKDForestSearchState) * maxNumNodes) ;
+    self -> searchIdBook = (vl_uindex*)vl_calloc (sizeof(vl_uindex), self->numData) ;
 
     for (ti = 0 ; ti < self->numTrees ; ++ti) {
-      double * searchBounds = vl_malloc(sizeof(double) * 2 * self->dimension) ;
+      double * searchBounds = (double*)vl_malloc(sizeof(double) * 2 * self->dimension) ;
       double * iter = searchBounds  ;
       double * end = iter + 2 * self->dimension ;
       while (iter < end) {

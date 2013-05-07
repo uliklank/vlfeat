@@ -4,15 +4,6 @@
 project( vlfeat )
 cmake_minimum_required(VERSION 2.6)
 
-include_directories(
-    ${CMAKE_CURRENT_SOURCE_DIR}
-    ${CMAKE_CURRENT_SOURCE_DIR}/toolbox
-    )
-
-list( APPEND VLFEAT_COMPILE_FLAGS "_CRT_SECURE_NO_DEPRECATE")
-list( APPEND VLFEAT_COMPILE_FLAGS "__LITTLE_ENDIAN__")
-list( APPEND VLFEAT_COMPILE_FLAGS "VL_BUILD_DLL")
-list( APPEND VLFEAT_COMPILE_FLAGS "__SSE2__")
 
 
 file( GLOB_RECURSE ${PROJECT_NAME}_LIBSRC
@@ -115,22 +106,35 @@ file( GLOB_RECURSE ${PROJECT_NAME}_MEXSRC
   toolbox/slic/vl_slic.c
 )
 
+SET_SOURCE_FILES_PROPERTIES("${PROJECT_NAME}_LIBSRC" PROPERTIES LANGUAGE CXX)
+
+include_directories(
+    ${CMAKE_CURRENT_SOURCE_DIR}
+    ${CMAKE_CURRENT_SOURCE_DIR}/toolbox
+    )
+
+list( APPEND VLFEAT_COMPILE_FLAGS "_CRT_SECURE_NO_DEPRECATE")
+list( APPEND VLFEAT_COMPILE_FLAGS "__LITTLE_ENDIAN__")
+#list( APPEND VLFEAT_COMPILE_FLAGS "VL_BUILD")
+list( APPEND VLFEAT_COMPILE_FLAGS "__SSE2__")
 
 add_library( ${PROJECT_NAME} 
-                 SHARED
+                 STATIC
                 
                 ${${PROJECT_NAME}_LIBSRC} 
                 )
-#add_library( ${PROJECT_NAME}_MEX 
-#                 STATIC
-#                ${${PROJECT_NAME}_MEXSRC}
-#                
-#)
 
 set_target_properties( ${PROJECT_NAME}
     PROPERTIES
         COMPILE_DEFINITIONS "${VLFEAT_COMPILE_FLAGS}" )
 
+
+
+#add_library( ${PROJECT_NAME}_MEX 
+#                 STATIC
+#                ${${PROJECT_NAME}_MEXSRC}
+#                
+#)
 
 #set_target_properties( ${PROJECT_NAME}_MEX
 #    PROPERTIES

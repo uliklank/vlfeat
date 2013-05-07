@@ -799,7 +799,7 @@ _vl_sift_smooth (VlSiftFilt * self,
     if (self->gaussFilter) vl_free (self->gaussFilter) ;
     self->gaussFilterWidth = VL_MAX(ceil(4.0 * sigma), 1) ;
     self->gaussFilterSigma = sigma ;
-    self->gaussFilter = vl_malloc (sizeof(vl_sift_pix) * (2 * self->gaussFilterWidth + 1)) ;
+    self->gaussFilter = (vl_sift_pix*)vl_malloc (sizeof(vl_sift_pix) * (2 * self->gaussFilterWidth + 1)) ;
 
     for (j = 0 ; j < 2 * self->gaussFilterWidth + 1 ; ++j) {
       vl_sift_pix d = ((vl_sift_pix)((signed)j - (signed)self->gaussFilterWidth)) / ((vl_sift_pix)sigma) ;
@@ -889,7 +889,7 @@ vl_sift_new (int width, int height,
              int noctaves, int nlevels,
              int o_min)
 {
-  VlSiftFilt *f = vl_malloc (sizeof(VlSiftFilt)) ;
+  VlSiftFilt *f = (VlSiftFilt*)vl_malloc (sizeof(VlSiftFilt)) ;
 
   int w   = VL_SHIFT_LEFT (width,  -o_min) ;
   int h   = VL_SHIFT_LEFT (height, -o_min) ;
@@ -897,7 +897,7 @@ vl_sift_new (int width, int height,
 
   /* negative value O => calculate max. value */
   if (noctaves < 0) {
-    noctaves = VL_MAX (floor (log2 (VL_MIN(width, height))) - o_min - 3, 1) ;
+    noctaves = VL_MAX (floor (log2 ((double)VL_MIN(width, height))) - o_min - 3, 1) ;
   }
 
   f-> width   = width ;
@@ -909,12 +909,12 @@ vl_sift_new (int width, int height,
   f-> s_max   = nlevels + 1 ;
   f-> o_cur   = o_min ;
 
-  f-> temp    = vl_malloc (sizeof(vl_sift_pix) * nel    ) ;
-  f-> octave  = vl_malloc (sizeof(vl_sift_pix) * nel
+  f-> temp    = (vl_sift_pix*) vl_malloc (sizeof(vl_sift_pix) * nel    ) ;
+  f-> octave  = (vl_sift_pix*)vl_malloc (sizeof(vl_sift_pix) * nel
                         * (f->s_max - f->s_min + 1)  ) ;
-  f-> dog     = vl_malloc (sizeof(vl_sift_pix) * nel
+  f-> dog     = (vl_sift_pix*)vl_malloc (sizeof(vl_sift_pix) * nel
                         * (f->s_max - f->s_min    )  ) ;
-  f-> grad    = vl_malloc (sizeof(vl_sift_pix) * nel * 2
+  f-> grad    = (vl_sift_pix*)vl_malloc (sizeof(vl_sift_pix) * nel * 2
                         * (f->s_max - f->s_min    )  ) ;
 
   f-> sigman  = 0.5 ;
@@ -1249,11 +1249,11 @@ vl_sift_detect (VlSiftFilt * f)
           if (f->nkeys >= f->keys_res) {
             f->keys_res += 500 ;
             if (f->keys) {
-              f->keys = vl_realloc (f->keys,
+              f->keys = (VlSiftKeypoint*)vl_realloc (f->keys,
                                     f->keys_res *
                                     sizeof(VlSiftKeypoint)) ;
             } else {
-              f->keys = vl_malloc (f->keys_res *
+              f->keys = (VlSiftKeypoint*)vl_malloc (f->keys_res *
                                    sizeof(VlSiftKeypoint)) ;
             }
           }

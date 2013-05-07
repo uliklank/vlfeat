@@ -346,10 +346,10 @@ VL_XCAT(vl_image_distance_transform_,SFX)
    originated).
    */
   vl_uindex x, y ;
-  T * from = vl_malloc (sizeof(T) * (numColumns + 1)) ;
-  T * base = vl_malloc (sizeof(T) * numColumns) ;
-  vl_uindex * baseIndexes = vl_malloc (sizeof(vl_uindex) * numColumns) ;
-  vl_uindex * which = vl_malloc (sizeof(vl_uindex) * numColumns) ;
+  T * from = (T*)vl_malloc (sizeof(T) * (numColumns + 1)) ;
+  T * base = (T*)vl_malloc (sizeof(T) * numColumns) ;
+  vl_uindex * baseIndexes = (vl_uindex*)vl_malloc (sizeof(vl_uindex) * numColumns) ;
+  vl_uindex * which = (vl_uindex*)vl_malloc (sizeof(vl_uindex) * numColumns) ;
   vl_uindex num = 0 ;
 
   for (y = 0 ; y < numRows ; ++y) {
@@ -519,7 +519,7 @@ VL_XCAT(vl_imconvcoltri_, SFX)
   vl_bool transp = flags & VL_TRANSPOSE ;
   vl_bool zeropad = (flags & VL_PAD_MASK) == VL_PAD_BY_ZERO ;
   T scale = (T) (1.0 / ((double)filterSize * (double)filterSize)) ;
-  T * buffer = vl_malloc (sizeof(T) * (imageHeight + filterSize)) ;
+  T * buffer = (T*)vl_malloc (sizeof(T) * (imageHeight + filterSize)) ;
   buffer += filterSize ;
 
   if (imageHeight == 0) {
@@ -628,7 +628,7 @@ VL_XCAT(_vl_new_gaussian_fitler_,SFX)(vl_size *size, double sigma)
 
   assert(size) ;
 
-  filter = vl_malloc((*size) * sizeof(T)) ;
+  filter = (T*)vl_malloc((*size) * sizeof(T)) ;
   filter[width] = 1.0 ;
   for (i = 1 ; i <= (signed)width ; ++i) {
     double x = (double)i / sigma ;
@@ -657,7 +657,7 @@ VL_XCAT(vl_imsmooth_, SFX)
   } else {
     filtery = VL_XCAT(_vl_new_gaussian_fitler_,SFX)(&sizey,sigmay) ;
   }
-  buffer = vl_malloc(width*height*sizeof(T)) ;
+  buffer = (T*)vl_malloc(width*height*sizeof(T)) ;
 
   VL_XCAT(vl_imconvcol_v,SFX) (buffer, height,
                                image, width, height, stride,

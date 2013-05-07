@@ -149,7 +149,7 @@ _vl_lbp_init_uniform(VlLbp * self)
 VlLbp *
 vl_lbp_new(VlLbpMappingType type, vl_bool transposed)
 {
-  VlLbp * self = vl_malloc(sizeof(VlLbp)) ;
+  VlLbp * self = (VlLbp *)vl_malloc(sizeof(VlLbp)) ;
   if (self == NULL) {
     vl_set_last_error(VL_ERR_ALLOC, NULL) ;
     return NULL ;
