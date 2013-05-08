@@ -921,17 +921,15 @@ static void vl_constructor () ;
 static void vl_destructor () ;
 
 
-#ifdef VL_BUILD_DLL
-#else
 VL_EXPORT void vl_init()
 {
     vl_constructor();
 }
+
 VL_EXPORT void vl_destroy()
 {
     vl_destructor();
 }
-#endif
 
 
 BOOL WINAPI DllMain(

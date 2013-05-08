@@ -325,7 +325,7 @@ defined(__DOXYGEN__)
 #        define VL_EXPORT extern __declspec(dllexport)
 #      endif
 #    else
-#        define VL_EXPORT extern
+#        define VL_EXPORT
 #    endif
 #  else
 #    ifdef VL_BUILD_DLL
