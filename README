@@ -42,6 +42,9 @@ QUICK START WITH MATLAB
   > vl_demo
 
 CHANGES
+Allow c++ build, allow static-lib usage, added CMake for static c++ usage.
+
+
   0.9.16     Added VL_COVDET(). This function implements the following
              detectors: DoG, Hessian, Harris Laplace, Hessian Laplace,
              Multiscale Hessian, Multiscale Harris. It also implements
