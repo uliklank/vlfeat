@@ -921,16 +921,6 @@ static void vl_constructor () ;
 static void vl_destructor () ;
 
 
-VL_EXPORT void vl_init()
-{
-    vl_constructor();
-}
-
-VL_EXPORT void vl_destroy()
-{
-    vl_destructor();
-}
-
 
 BOOL WINAPI DllMain(
     HINSTANCE hinstDLL,  // handle to DLL module
@@ -969,6 +959,19 @@ BOOL WINAPI DllMain(
 }
 
 #endif
+
+
+
+VL_EXPORT void vl_init()
+{
+    vl_constructor();
+}
+
+VL_EXPORT void vl_destroy()
+{
+    vl_destructor();
+}
+
 
 /** @internal @brief Initialize VLFeat */
 static void
@@ -1033,6 +1036,8 @@ vl_constructor ()
   printf("VLFeat DEBUG: constructor ends.\n") ;
 #endif
 }
+
+
 
 /** @internal @brief Destruct VLFeat */
 static void
